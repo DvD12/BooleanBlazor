@@ -1,0 +1,60 @@
+﻿@page "/pizze"
+@using BlazorPrimaApplicazione.Data;
+@inject Sotsera.Blazor.Toaster.IToaster Toaster
+@inject DialogService DialogService
+
+@if (MiePizze != null)
+{
+    <RadzenGrid Data="@MiePizze" TItem="Pizza">
+        <Template Context="p">
+            <div class="row">
+                <div class="col-3">Nome</div>
+                <div class="col-9"><RadzenTextBox @bind-Value="p.Name" /></div>
+            </div>
+            <div class="row">
+                <div class="col-3">Descrizione</div>
+                <div class="col-9"><RadzenTextBox @bind-Value="p.Description" /></div>
+            </div>
+            <div class="row">
+                <div class="col"><RadzenButton Text="Cliccami!!!!" Click="ShowInlineDialog" /></div>
+            </div>
+        </Template>
+        <Columns>
+            <RadzenGridColumn TItem="Pizza" Property="Name" Title="Nome pizza" />
+            <RadzenGridColumn TItem="Pizza" Property="Description" Title="Desc" />
+            <RadzenGridColumn TItem="Pizza" Property="Price" Title="Prezzo" />
+        </Columns>
+    </RadzenGrid>
+}
+
+<div style="visibility: @Visibility">
+    <h1>SONO NASCOSTO!</h1>
+</div>
+<RadzenButton Text="Cambia visibilità" Click="() => SwitchVisibility = !SwitchVisibility" />
+
+@code
+{
+    private List<Pizza> MiePizze;
+    private bool SwitchVisibility { get; set; }
+    private string Visibility => SwitchVisibility == true ? "visible" : "hidden";
+
+    protected override void OnInitialized()
+    {
+        MiePizze = PizzaManager.GetPizzas();
+    }
+
+    private async Task ShowInlineDialog()
+    {
+        var result = await DialogService.OpenAsync<ConfirmationDialog>("Titolo", new Dictionary<string, object>()
+        {
+            {"CustomText", "Titolo titoloso" }
+        });
+
+        if (result == true)
+            Toaster.Success("L'utente ha cliccato OK!!!1!11unounonuono");
+        else
+            Toaster.Error("L'utente ha cliccato cancel :<");
+
+        Console.WriteLine($"Dialog result: {result}");
+    }
+}

@@ -1,0 +1,25 @@
+﻿@using BlazorPrimaApplicazione.Data;
+
+<div style="background-color: yellow">
+    <div class="row">
+        <div class="col-auto">
+            @Pizza.Name
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-auto">
+            @Pizza.Description
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-auto">
+            @CustomDescription
+        </div>
+    </div>
+</div>
+
+@code
+{
+    [Parameter] public Pizza Pizza { get; set; }
+    [Parameter] public string CustomDescription { get; set; }
+}
