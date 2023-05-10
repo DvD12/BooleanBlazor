@@ -2,6 +2,7 @@ using BlazorPrimaApplicazione.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Radzen;
+using ServiceStack.OrmLite;
 using Sotsera.Blazor.Toaster.Core.Models;
 
 namespace BlazorPrimaApplicazione
@@ -44,7 +45,23 @@ namespace BlazorPrimaApplicazione
             app.MapBlazorHub();
             app.MapFallbackToPage("/_Host");
 
+            RunDbMigrations();
+
+            // TEST
+            using var db = OrmHelper.OpenConnection();
+            var pizza = new Pizza()
+            {
+                Name = "nome pizza"
+            };
+            db.Save(pizza);
+
             app.Run();
+        }
+
+        private static void RunDbMigrations()
+        {
+            using var db = OrmHelper.OpenConnection();
+            db.CreateMissingColumns<Pizza>(); // Idempotent - running the same thing twice doesn't matter if Pizza stays the same
         }
     }
 }
