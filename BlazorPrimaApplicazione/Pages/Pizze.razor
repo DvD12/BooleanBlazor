@@ -1,23 +1,31 @@
 ﻿@page "/pizze"
 @using BlazorPrimaApplicazione.Data;
+@using ServiceStack.OrmLite;
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
 @inject DialogService DialogService
 
 @if (MiePizze != null)
 {
-    <RadzenGrid Data="@MiePizze" TItem="Pizza">
+    <RadzenButton Text="Create new pizza" Icon="add" Click="CreatePizza" />
+    <RadzenGrid Data="@MiePizze" TItem="Pizza" AllowFiltering="true">
         <Template Context="p">
-            <div class="row">
-                <div class="col-3">Nome</div>
-                <div class="col-9"><RadzenTextBox @bind-Value="p.Name" /></div>
-            </div>
-            <div class="row">
-                <div class="col-3">Descrizione</div>
-                <div class="col-9"><RadzenTextBox @bind-Value="p.Description" /></div>
-            </div>
-            <div class="row">
-                <div class="col"><RadzenButton Text="Cliccami!!!!" Click="ShowInlineDialog" /></div>
-            </div>
+            <RadzenTabs>
+                <Tabs>
+                    <RadzenTabsItem Text="View">
+                        <PizzaView Pizza="p" />
+                    </RadzenTabsItem>
+                    <RadzenTabsItem Text="Edit">
+                        <div class="row">
+                            <div class="col-3">Nome</div>
+                            <div class="col-9"><RadzenTextBox @bind-Value="p.Name" /></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">Descrizione</div>
+                            <div class="col-9"><RadzenTextBox @bind-Value="p.Description" /></div>
+                        </div>
+                    </RadzenTabsItem>
+                </Tabs>
+            </RadzenTabs>
         </Template>
         <Columns>
             <RadzenGridColumn TItem="Pizza" Property="Name" Title="Nome pizza" />
@@ -27,16 +35,9 @@
     </RadzenGrid>
 }
 
-<div style="visibility: @Visibility">
-    <h1>SONO NASCOSTO!</h1>
-</div>
-<RadzenButton Text="Cambia visibilità" Click="() => SwitchVisibility = !SwitchVisibility" />
-
 @code
 {
     private List<Pizza> MiePizze;
-    private bool SwitchVisibility { get; set; }
-    private string Visibility => SwitchVisibility == true ? "visible" : "hidden";
 
     protected override void OnInitialized()
     {
@@ -56,5 +57,16 @@
             Toaster.Error("L'utente ha cliccato cancel :<");
 
         Console.WriteLine($"Dialog result: {result}");
+    }
+
+    private void CreatePizza()
+    {
+        using var db = OrmHelper.OpenConnection();
+        var pizza = new Pizza()
+            {
+                Name = "Pizza di default"
+            };
+        db.Save(pizza);
+        MiePizze.Add(pizza); // Aggiorna anche l'UI
     }
 }

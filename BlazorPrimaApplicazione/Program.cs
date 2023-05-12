@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Components.Web;
 using Radzen;
 using ServiceStack.OrmLite;
 using Sotsera.Blazor.Toaster.Core.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorPrimaApplicazione
 {
@@ -12,11 +14,16 @@ namespace BlazorPrimaApplicazione
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            //var connectionString = builder.Configuration.GetConnectionString("PizzaContextConnection") ?? throw new InvalidOperationException("Connection string 'PizzaContextConnection' not found.");
+
+            //builder.Services.AddDbContext<PizzaContext>(options => options.UseSqlServer(connectionString));
+            builder.Services.AddDbContext<PizzaContext>();
+
+            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<PizzaContext>();
 
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
-            builder.Services.AddSingleton<WeatherForecastService>();
             builder.Services.AddScoped<DialogService>();
             builder.Services.AddToaster(config =>
             {
@@ -42,18 +49,14 @@ namespace BlazorPrimaApplicazione
 
             app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.MapBlazorHub();
+            app.MapRazorPages();
             app.MapFallbackToPage("/_Host");
 
             RunDbMigrations();
-
-            // TEST
-            using var db = OrmHelper.OpenConnection();
-            var pizza = new Pizza()
-            {
-                Name = "nome pizza"
-            };
-            db.Save(pizza);
 
             app.Run();
         }
