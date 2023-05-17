@@ -3,6 +3,7 @@
 @using ServiceStack.OrmLite;
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
 @inject DialogService DialogService
+@attribute [Authorize(Roles = RoleData.ROLE_ADMIN)]
 
 @if (MiePizze != null)
 {
@@ -23,6 +24,10 @@
                             <div class="col-3">Descrizione</div>
                             <div class="col-9"><RadzenTextBox @bind-Value="p.Description" /></div>
                         </div>
+                        <div class="row">
+                            <div class="col-3">Prezzo</div>
+                            <div class="col-9"><RadzenNumeric @bind-Value="p.Price" /></div>
+                        </div>
                     </RadzenTabsItem>
                 </Tabs>
             </RadzenTabs>
@@ -30,7 +35,7 @@
         <Columns>
             <RadzenGridColumn TItem="Pizza" Property="Name" Title="Nome pizza" />
             <RadzenGridColumn TItem="Pizza" Property="Description" Title="Desc" />
-            <RadzenGridColumn TItem="Pizza" Property="Price" Title="Prezzo" />
+            <RadzenGridColumn TItem="Pizza" Property="Price" Title="Prezzo" FormatString="{0:F2}" />
         </Columns>
     </RadzenGrid>
 }

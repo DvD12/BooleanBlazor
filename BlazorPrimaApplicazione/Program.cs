@@ -19,8 +19,10 @@ namespace BlazorPrimaApplicazione
             //builder.Services.AddDbContext<PizzaContext>(options => options.UseSqlServer(connectionString));
             builder.Services.AddDbContext<PizzaContext>();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<PizzaContext>();
-
+            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<PizzaContext>();
+            
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();

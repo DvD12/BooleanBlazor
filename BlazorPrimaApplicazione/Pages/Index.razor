@@ -1,2 +1,6 @@
 ﻿@page "/"
+@using BlazorPrimaApplicazione.Data;
 
+<AuthorizeView Roles="@RoleData.ROLE_ADMIN">
+    <p>Sei un admin!</p>
+</AuthorizeView>
