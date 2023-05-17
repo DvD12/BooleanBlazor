@@ -24,10 +24,13 @@
                             <div class="col-3">Descrizione</div>
                             <div class="col-9"><RadzenTextBox @bind-Value="p.Description" /></div>
                         </div>
-                        <div class="row">
-                            <div class="col-3">Prezzo</div>
-                            <div class="col-9"><RadzenNumeric @bind-Value="p.Price" /></div>
-                        </div>
+                        <AuthorizeView Roles="@RoleData.ROLE_ADMIN">
+                            <div class="row">
+                                <div class="col-3">Prezzo</div>
+                                <div class="col-9"><RadzenNumeric @bind-Value="p.Price" /></div>
+                            </div>
+                        </AuthorizeView>
+
                     </RadzenTabsItem>
                 </Tabs>
             </RadzenTabs>
