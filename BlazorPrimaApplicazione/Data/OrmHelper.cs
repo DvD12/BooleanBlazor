@@ -5,7 +5,7 @@ namespace BlazorPrimaApplicazione.Data
 {
     public static class OrmHelper
     {
-        public static string ConnectionString { get; private set; } = "Data Source=localhost;Initial Catalog=PizzeriaOrmLite;Integrated Security=True";
+        public static string ConnectionString { get; private set; } = "Data Source=localhost;Initial Catalog=PizzeriaOrmLite;Integrated Security=True;TrustServerCertificate=True";
         public static IOrmLiteDialectProvider Dialect { get; set; } = SqlServerDialect.Provider;
 
         private static OrmLiteConnectionFactory ConnectionFactory { get; set; }
